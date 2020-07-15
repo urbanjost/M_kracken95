@@ -32,7 +32,7 @@ Just download the github repository, enter the src/ directory and run make:
      make
 ```
 
-This will compile the M_process module and build all the example programs.
+This will compile the M_kracken95 module and build all the example programs.
 Then you can run the examples:
 
       ../test/test1/kracken_test-1 -r 1234.56

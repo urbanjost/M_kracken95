@@ -72,7 +72,7 @@ will remain available as-is.
 
 The routine GET_COMMAND_ARGUMENTS() is the only one that uses non-f95
 standard routines to read from the command line. If you do not have a
-compiler supports these f2003 procedures you may have to change that
+compiler that supports these f2003 procedures you may have to change that
 procedure to make calls to the equivalent common extensions GETARGS()
 and IARGC(). Note that as of this date it is very likely you can get
 a GET_COMMAND_ARGUMENT() look-alike from the free F2KCLI package from

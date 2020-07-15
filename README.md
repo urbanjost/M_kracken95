@@ -5,6 +5,35 @@ procedure (and related routines) for command line parsing. See the
 [kracken documentation](https://urbanjost.github.io/M_kracken95/krackenhelp.html) for a
 full description.
 
+## DOWNLOAD AND BUILD
+Just download the github repository, enter the src/ directory and run make:
+
+```bash
+     git clone https://github.com/urbanjost/M_kracken95.git
+     cd M_kracken95/src
+     # change Makefile if not using gfortran(1)
+     make
+```
+
+This will compile the M_process module and optionally build all the example programs from
+the document pages in the PROGRAMS/ sub-directory and run the unit tests.
+
+## SUPPORTS FPM
+Alternatively, download the github repository and build it with 
+fpm ( as described at [Fortran Package Manager](https://github.com/fortran-lang/fpm) )
+
+```bash
+     git clone https://github.com/urbanjost/M_kracken95.git
+     cd M_kracken95
+     fpm build
+     fpm test
+```
+
+or just list it as a dependency in your fpm.toml project file.
+
+     [dependencies]
+     M_process      = { git = "https://github.com/urbanjost/M_kracken95.git" }
+
 ## Which version of kracken(3f) is this?
 
 There are multiple versions of the kracken(3f) routine dating back

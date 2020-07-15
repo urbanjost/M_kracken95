@@ -1,0 +1,493 @@
+<html>
+<head>
+  <title>Fortran command line argument parsing</title>
+  <meta name="generator" content="vi, HTML Tidy for Cygwin">
+  <meta name="description" content="parse and crack Fortran command line arguments">
+  <meta name="keywords" content="command line arguments,CLA,Fortran,get_command(3),parse,crack,getargs(3),getopts(3),get_command_arguments(3),CLI">
+<link rel="stylesheet" href="../../html/StyleSheets/Midnight.css" type="text/css" />
+<script src="../../../javascript/doc.js" type="text/javascript" language="JavaScript1.1"> </script>
+<style> 
+px {font-family: "Lucida Console", Monaco, monospace}
+p { font-size:100%; line-height:1.1em; }
+body {xfont-style: sans-serif}
+body {
+color:#333; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:1em; line-height:1.3em; }
+a:visited { color:#666; }
+h1,h2,h3,h4,h5,h6 { color:#333; font-family:georgia, verdana, sans-serif; }
+h1 { font-size:150%; page-break-before:auto;background-color: #aaaaff}
+h2 { font-size:143%;color:teal; }
+h3 { font-size:134%;color:blue; }
+h4 { font-size:120%;color:gray; }
+img { max-width: 55em}
+p{ padding: 0;margin:0; }
+p{ padding-right:1.4em; }
+p{ padding-bottom:1em; }
+p{ padding-top:1em; }
+p{ whitespace: pre-wrap; }
+h5,h6 { font-size:100% }
+a.nav,a:link.nav, a:visited.nav { background-color:#FFF; color:#000; }
+XXtable { border:double #000; border-collapse:collapse; }
+XXtable { border-collapse:collapse; }
+XXtd { border:thin solid #888; }
+XXtd { border:none; }
+li { margin-bottom:0.5em; }
+blockquote { display:block; font-size:100%; line-height:1.1em; margin:0 0 1.5em; padding:0 2.5em; }
+pre { background-color:#DDD; font-size:100%; overflow:auto; padding:1em; }
+a,li span { color:#000; }
+a:hover, a.nav:hover, a:hover math { background-color:#000; color:#FFF; }
+#Container { margin:0 10px; text-align:center; background-color: #BBB}
+#Content { border-top:none; margin:auto; padding:0.3em; text-align:left; width:100%; max-width:55em; background:#FFF}
+span.webName { font-size:.5em; }
+textarea#content { font-size: 1em; line-height: 1.125; }
+h1#pageName { line-height:1em; margin:0.2em 0.3em 0.2em 0.3em; padding:0; }
+.property { color:#666; font-size:100%; }
+a.existingWikiWord[title]{ //border: 1px dashed #BBB; }
+.byline { color:#666; font-size:1.0em; font-style:italic; margin-bottom:1em; padding-top:1px; } 
+</style> 
+</head>
+<BODY bgcolor=#F0F0F0 text=#000000 link=#0000ff vlink=#C000C0 alink=#ff0000><A NAME=top></A>
+<h5><a href="index.html">[UP]</a></h5>
+<div id="Container">
+<div id="Content">
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<h1><br/> KRACKEN: The Fortran Command Line Argument Cracker -- f95 Version<br/>&nbsp;</h1>
+<author> John S. Urban (last change: Nov. 2014)</author>
+<ul>
+<li><a href="#ABSTRACT">Abstract</a></li>
+<li><a href="#EX1">Example of typical use </a></li>
+<li><a href="#DESCRIPTION">Routine Descriptions</a></li>
+<li><a href="#EX2">Extended Example</a></li>
+</ul>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<div class="synopsis">
+<h2><a name="ABSTRACT">ABSTRACT</a></h2>
+
+<p class="synopsis">
+   The Fortran module M_KRACKEN(3f) lets you use Unix-like command line
+   arguments very easily.  You can call your command like this:
+</p>
+
+<pre>
+ krackenbasic -r 333.333 -f /home/urbanjs/testin -l -i 300
+</pre>
+<p>
+   with very little code.
+</p>
+<p>
+   KRACKEN(3f) provides:
+</p>
+
+<ul>
+   <li> a standard style for parsing arguments and keywords </li>
+   <li> a clear way to specify allowable keywords and default values </li>
+   <li> simple access to the parsed data from procedures </li>
+   <li> easy conversion from strings to numbers </li>
+   <li> easy conversion from strings to arrays </li>
+   <li> a simple menu-driven interactive mode for modifying parameters </li>
+</ul>
+
+
+<h2><a name="EX1">Example Usage</a></h2>
+
+<PRE>
+<B><FONT COLOR="#A020F0">program</FONT></B> krackenbasic
+   use M_kracken
+   <B><FONT COLOR="#228B22">character</FONT></B>(255) filename
+   <B><FONT COLOR="#228B22">logical</FONT></B> lval
+!  define command arguments, default values and crack command line
+   <B><FONT COLOR="#A020F0">call</FONT></B> kracken(<B><FONT COLOR="#BC8F8F">'cmd'</FONT></B>,<B><FONT COLOR="#BC8F8F">'-i 10 -r 10e3 -d 4.1123344d0 -l .false. -f input'</FONT></B>)
+!  get values
+   <B><FONT COLOR="#A020F0">call</FONT></B> retrev(<B><FONT COLOR="#BC8F8F">'cmd_f'</FONT></B>,filename,iflen,ier) ! get -f FILENAME
+   lval = lget(<B><FONT COLOR="#BC8F8F">'cmd_l'</FONT></B>)                    ! get -l present?
+   rval = rget(<B><FONT COLOR="#BC8F8F">'cmd_r'</FONT></B>)                    ! get -r RVAL
+   dval = dget(<B><FONT COLOR="#BC8F8F">'cmd_d'</FONT></B>)                    ! get -d DBLEVAL
+   ival = iget(<B><FONT COLOR="#BC8F8F">'cmd_i'</FONT></B>)                    ! get -i IVAL
+!  all done parsing; <B><FONT COLOR="#A020F0">do</FONT></B> something with the values
+   <B><FONT COLOR="#A020F0">print</FONT></B> *, &quot;filename=&quot;,filename(:iflen)
+   <B><FONT COLOR="#A020F0">print</FONT></B> *, &quot; i=&quot;,ival, &quot; r=&quot;,rval, &quot; l=&quot;,lval, &quot;d=&quot;,dval
+<B><FONT COLOR="#A020F0">end</FONT></B> <B><FONT COLOR="#A020F0">program</FONT></B> krackenbasic
+</PRE>
+
+<p>
+  Here's another simple example that isolates all the parsing in a 
+  main program that then calls the real application 
+</p>
+
+<pre>
+program krackenbasic
+   use M_kracken
+!  define command arguments, default values and crack command line
+   call kracken('cmd',           &amp;
+   &amp;   '-int 20                  &amp;
+   &amp;   -real 10e3                &amp;
+   &amp;   -dble 4.11223344556677d0  &amp;
+   &amp;   -logical .false.          &amp;
+   &amp;   -file input'              &amp;
+   &amp;   )
+!  all done parsing; do something with the values
+   call mymain(                  &amp;
+   &amp; sget('cmd_file'),           &amp;
+   &amp; lget('cmd_logical'),        &amp;
+   &amp; rget('cmd_real'),           &amp;
+   &amp; dget('cmd_dble'),           &amp;
+   &amp; iget('cmd_int')             &amp;
+   &amp; )
+end program krackenbasic
+
+subroutine mymain(filename,flag,value1,value2,ivalue1)
+character*(*) filename
+doubleprecision value2
+logical flag
+! do something with the values
+   print *, 'filename=',trim(filename)
+   print *, 'values=',flag,value1,value2,ivalue1
+end subroutine mymain
+! expected output:
+! filename=input
+! values= F   10000.0000       4.1122334455667700               20
+</pre>
+</div>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<h2><a name="DESCRIPTION">The Routines</a></h2>
+<ul>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<li> KRACKEN(VERB,PROTOTYPE) to define your command, set defaults, and then apply the user-supplied options </li>
+<pre>
+ SUBROUTINE kracken(verb, string[,ierror])
+
+    ! arbitrary command name, usually 'cmd'
+    CHARACTER(LEN=*), INTENT(IN) ::  verb
+
+    ! prototype command to define keywords and defaults
+    ! this string is simply a list of all keywords and their
+    ! default values exactly as you would type them on the
+    ! command line
+    CHARACTER(LEN=*), INTENT(IN) :: string
+
+    ! If an error occurs such as an unknown keyword the 
+    ! calling program will be stopped unless the optional
+    ! parameter IERROR is present. If present, it is up 
+    ! to the calling program to decide what to do if 
+    ! a non-zero value is returned.
+    INTEGER, INTENT(OUT), OPTIONAL :: ierror
+
+ END SUBROUTINE kracken
+
+ CALL KRACKEN('cmd','-start 1 -end 100')
+</pre>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<li> RETREV(3) to get the value of a command keyword as a string </li>
+<pre>
+ SUBROUTINE retrev(name, val, len, ier)
+
+    ! parameter name of form VERB_KEYWORD
+    CHARACTER(len=*),intent(in) :: name
+
+    ! returned parameter value
+    CHARACTER(len=*),intent(out):: val
+
+    ! length of returned string
+    INTEGER,intent(out)  :: len
+
+    ! error flag. Any non-zero value means an error occurred
+    INTEGER,intent(out)  :: ier
+
+ END SUBROUTINE retrev
+
+ CALL RETREV('cmd_start',val,len,ier)
+</pre>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<li> STRING_TO_REAL(STRING,VALUE) to convert a string to a number </li>
+<pre>
+ SUBROUTINE string_to_real(chars, valu, ierr)
+
+    ! string representing numeric value to convert
+    CHARACTER(len=*), intent(in) :: chars
+
+    ! real value returned from reading string CHARS
+    REAL, intent(out) :: valu
+
+    ! if non-zero an error occurred
+    INTEGER, intent(out) :: ierr
+ END SUBROUTINE string_to_real
+
+ val='1'
+ call string_to_real(VAL,x,ierr)
+</pre>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+      <li> DELIM(3) to split a list into single words </li>
+<pre>
+ SUBROUTINE delim(INLINE,array,n,icount,ibegin,iterm,ilen,dlim)
+    CHARACTER(*) INLINE, dlim *(*)
+    ! INLINE is the string to break into tokens
+
+    CHARACTER array(n)*(*)
+    ! array is the array to fill with tokens
+
+    INTEGER icount, ibegin(n), iterm(n), ilen
+    ! icount is how many tokens are found
+    ! ibegin(1:icount) = starting column numbers for the tokens in INLINE
+    ! iend(1:icount)=ending column numbers for the tokens in INLINE
+    ! ilen is the position of last non-blank character in INLINE
+    ! dlim is a string of single characters to use as delimiters
+
+ END SUBROUTINE delim
+</pre>
+<p>
+      If ARRAY(N) fills before reaching the end of the line the routine stops.
+      Check "if(iend(icount) .eq. ilen)" to see if you got to the end.
+</p>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+</ul>
+<p>
+   There are also convenience functions for getting simple values
+</p>
+<pre>
+      lval=lget(VERB_ARGNAME) !gets a "logical" value. 
+      rval=rget(VERB_ARGNAME) !gets a "real" value.
+      dval=rget(VERB_ARGNAME) !gets a "doubleprecision" value.
+      ival=iget(VERB_ARGNAME) !gets a "integer" value
+      sval=sget(VERB_ARGNAME) !gets a "character" value
+</ul>
+</pre>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+
+<h2><a name="EX2">Extended Example</a></h2>
+
+<p>
+   The following example is a bit long compared to typical use; but exercises all the 
+   options.  The command generated will have parameters
+   -i, -r, -l, -par1, -par2, and -par3.  And here is a main program that does just that ...
+</p>
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+<pre>
+      program krackentest
+      use M_kracken
+
+! call with an arbitrary verb name and a prototype string that defines
+! allowable switch names and default values
+
+      call <b>kracken</b>('mycommand',
+     &amp;' -i 10 -r 200.3 -l -par1 "#N#" -par2 -par3 10 20 30 -files', &amp;
+     &amp; ierror)
+
+! that's it. You defined your command arguments and their default
+! values and parsed the user-supplied command line arguments.
+!
+! Now you can just retrieve the values as strings using
+! names of the form VERB_SWITCHNAME anywhere in your program.
+! Note that the special name "VERB_oo"  is for the string
+! before any switch. to see how look at the SAMPLES() procedure
+
+      call samples()
+      end 
+</pre>
+<p>
+   When the user types
+</p>
+<pre>
+ mycommand  one two -l -i 10 -three four -files file1 file2 file3
+</pre>
+
+<p>
+   the program should complain about -three not being a valid option
+   and will create names that can be used with RETREV(3f).
+</p>
+   <ul>
+   <li>CALL RETREV('mycommand_oo',val,ier) ! -&gt; sets VAL='one two'<br>
+       This is thrown in on the user's command intentionally to
+       demonstrate the existence of the -oo parameter.  Often, you
+       can ignore it exists, but the -oo option is always there, and
+       represents anything before the first keyword. A default value
+       always overrides a blank value on the command line.  <b>There's one
+       in every crowd</b>. This behavior is actually quite useful, but
+       unique. The rest act in an intuitive fashion for anyone familiar
+       with AEGIS/UNIX/Linux:
+   </li>
+   <li>CALL RETREV('mycommand_i',val,ier) ! -&gt;sets VAL=' 10'</li>
+   <li>CALL RETREV('mycommand_r',val,ier) ! -&gt;sets VAL=' 200.3'</li>
+   <li>CALL RETREV('mycommand_l',val,ier) ! -&gt;sets VAL='' </li>
+   <li>CALL RETREV('mycommand_par1',val,ier) ! -&gt;sets VAL=' #N#'</li>
+   <li>CALL RETREV('mycommand_par2',val,ier) ! -&gt;sets VAL='' </li>
+   <li>CALL RETREV('mycommand_par3',val,ier) ! -&gt;sets VAL='10 20 30' </li>
+   <li>CALL RETREV('mycommand_files',val,ier) ! -&gt;sets VAL='file1 file2 file3'</li>
+   </ul>
+<p>
+So lets take a look at something that calls RETREV(3F) and the convenience
+functions (LGET(),IGET(),RGET(),DGET(),....). For completeness, I show the use of
+string_to_real(3F) to convert the string returned by RETREV(3F) to a
+number; and the use of DELIM(3F) to break down a returned list into words.
+
+Note that as long as the routines are not called many times (because they are
+slower than common alternatives), you can just put the calls to RETREV()
+where you need the information instead of passing the values around or
+putting them into a COMMON or MODULE.
+</p>
+<pre>
+C<i>=======================================================================--------</i>
+      SUBROUTINE samples
+      USE M_kracken
+
+      CHARACTER*255 value
+      LOGICAL lval
+
+C<i> everything before any switch is always VERB_oo</i>
+      call <b>RETREV</b>('mycommand_oo',value,len,ier)
+      write(*,*)'before any switch=',value(:len)
+
+C<i> Getting an integer from -i value</i>
+      inumber=<b>IGET</b>('mycommand_i')
+      write(*,*)'value for -i =',inumber,' divided by 2 is ',inumber/2
+
+C<i> Getting a real number from -r value </i>
+      anumber=<b>RGET</b>('mycommand_r')
+      write(*,*)'value for -r =',anumber,'divided by 2 is ',anumber/2
+
+C<i> Getting a logical value from -l value </i>
+      lval=<b>LGET</b>('mycommand_l')
+      write(*,*)'value for -l =',lval
+
+C<i> Getting a string (with a default) from -par1</i>
+      call <b>RETREV</b>('mycommand_par1',value,len,ier)
+      write(*,*)'value for -par1 =',value(:len)
+
+C<i> Getting a string (with no default) from -par2</i>
+      call <b>RETREV</b>('mycommand_par2',value,len,ier)
+      write(*,*)'value for -par2 =',value(:len)
+
+C<i> Getting a string with a multi-word default and splitting it from -par3</i>
+      call listem('mycommand_par3','-par3',.true.)
+
+C<i> List of files</i>
+      call listem('mycommand_files','-files',.false.)
+
+      end
+C<i>=======================================================================--------</i>
+      SUBROUTINE listem(keyword,label,toreal)
+      USE M_kracken
+C<i>     Just getting fancy and showing the use of DELIM(3F)</i>
+C<i>     SAMPLE that decomposes list of strings and optionally, numbers</i>
+C<i>     and prints it.</i>
+C<i>     Delimit with space, comma, or colon</i>
+      LOGICAL toreal
+      CHARACTER*(*) keyword
+      CHARACTER*(*) label
+      CHARACTER*255 value
+
+C<i>     for DELIM call if you want to break down a list</i>
+      CHARACTER*255 array(132)
+      INTEGER ibegin(132)
+      INTEGER iterm(132)
+
+C<i>     get the value of the keyword and the length</i>
+      CALL <b>RETREV</b>(keyword,value,len,ier)
+      WRITE(*,*)'value for ',label,'=',value(:len)
+C<i>     split the list into one word per array</i>
+      call <b>DELIM</b>(value,array,132,igot,ibegin,iterm,ilen,' ,:')
+C<i>     print and optionally convert each word into a numeric value</i>
+      DO i10=1,igot
+         WRITE(*,*)i10,') ',array(i10)(:len_trim(array(i10)))
+         IF(toreal)THEN
+            CALL <b>string_to_real</b>(array(i10),anumber,ier)
+            IF(ier.eq.0)THEN
+               WRITE(*,*)' which is a number'
+            ELSE
+               WRITE(*,*) ' which is not a number'
+            ENDIF
+         ENDIF
+      ENDDO
+      RETURN
+      END
+C=======================================================================--------
+</pre>
+<p>
+   This shows the expected output of the execution:
+</p>
+
+<pre>
+ # Remember the command was defined by
+ # call kracken('mycommand',&amp;
+ # &amp;' -i 10 -r 200.3 -l -par1 "#N#" -par2 -par3 10 20 30 -- ',&amp;
+   &amp; ierror)
+ #
+ # user types
+ mycommand  one two -l -i 10 -three four -- file1 file2 file3
+ # response should be
+ &gt;:error: UNKNOWN OPTION mycommand_three
+ before any switch=one two
+ value for -i =10
+ divided by 2 is  5
+ value for -r =200.3
+ divided by 2 is  100.15
+ value for -par1 =#N#
+ value for -par2 =
+ value for -par3=10 20 30
+ 1) 10
+  which is a number
+ 2) 20
+  which is a number
+ 3) 30
+  which is a number
+ value for --=file1 file2 file3
+ 1) file1
+ 2) file2
+ 3) file3
+</pre>
+
+<h3>Optional special processing</h3>
+
+<p>
+   You can ignore this section if you like, but there is a little bit
+   of special processing that you can take advantage of ...
+</p>
+
+<ul>
+   <li> --KEYWORD is equivalent to -KEYWORD; primarily so that --version and --help are easily supported.</li>
+</ul>
+
+<h2> Interactive menu mode </h2>
+
+<p>
+   The menu mode feature is in a state of flux and may change significantly ...
+</p>
+
+<p>
+   All commands automatically have the parameter "-?". If it is present, a menu
+   appears after any specified options have been applied that allows for changing
+   parameters interactively. 
+</p>
+
+<p>
+   The default prompts are the keywords themselves and their current values. To set your own prompts call SETPROMPTS(3f):
+</p>
+<pre>
+    call setprompts(verb_name,options_and_prompts)
+</pre>
+<p>
+    where the special prompt string "#N#" means to not allow prompting for this parameter. For example:
+</p>
+<pre>
+     ! set prompts for interactive mode ...
+     call setprompts('copy','                           &amp;
+     &amp; -oo "#N#"                                        &amp;
+     &amp; -i Enter input file name                         &amp;
+     &amp; -o Enter output file name                        &amp;
+     &amp; -version "#N#"                                   &amp;
+     &amp; -help "#N#"                                      &amp;
+     &amp; ')
+     call kracken('copy','-i -o -version .false. -help .false')
+</pre>
+<p>
+    Then the command 
+    <pre>
+       copy -?
+    </pre>
+    would only prompt for the -i and -o parameters.
+</p>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
+</div>
+</div>
+</body>
+</html>

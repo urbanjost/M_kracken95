@@ -1,0 +1,27 @@
+name = "M_kracken95"
+version = "0.1.0"
+license = "Public Domain"
+author = "John S. Urban"
+maintainer = "urbanjost@comcast.net"
+copyright = "2020 John S. Urban"
+###########################################################################
+[[test]]
+name="test1"
+source-dir="test/test1"
+main="kracken_test-1.f90"
+###########################################################################
+[[test]]
+name="test2"
+source-dir="test/test2"
+main="kracken_test-2.f90"
+###########################################################################
+[[test]]
+name="test3"
+source-dir="test/test3"
+main="kracken_test-3.f90"
+###########################################################################
+#[[executable]]
+#name="ls"
+#source-dir="app/app_ls"
+#main="ls.f90"
+###########################################################################

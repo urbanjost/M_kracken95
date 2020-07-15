@@ -5,6 +5,19 @@ procedure (and related routines) for command line parsing. See the
 [kracken documentation](https://urbanjost.github.io/M_kracken95/krackenhelp.html) for a
 full description.
 
+## SAMPLE USAGE
+
+```fortran
+    program krackentest
+    use M_kracken95, only : kracken, iget, lget, rgt, sget
+    implicit none
+    ! define command and default argument values and read command line arguments
+      call kracken('cmd', ' -i 10 -r 10.0e3 -l .F. -f input')
+    ! retrieve values as specified types and use them
+      write(*,*)trim(sget('cmd_f')), iget('cmd_i'), lget('cmd_l'), rget('cmd_r')
+    end program krackentest
+```
+
 ## DOWNLOAD AND BUILD
 Just download the github repository, enter the src/ directory and run make:
 

@@ -24,6 +24,7 @@ integer :: ier
       ' [-h|-help|--help]|     ', &
       ' [-v|-version|--version]', &
       '']
+      stop
    endif
 !  handle version requests allowing most common variants
    if(lget('cmd_v').or.lget('cmd_version'))then

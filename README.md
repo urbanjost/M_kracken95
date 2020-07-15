@@ -28,8 +28,12 @@ Just download the github repository, enter the src/ directory and run make:
      make
 ```
 
-This will compile the M_process module and optionally build all the example programs from
-the document pages in the PROGRAMS/ sub-directory and run the unit tests.
+This will compile the M_process module and build all the example programs.
+Then you can run the examples:
+
+      ../test/test1/kracken_test-1 -r 1234.56
+      ../test/test1/kracken_test-2 --help
+      ../test/test1/kracken_test-3 --par3 100 200 300
 
 ## SUPPORTS FPM
 Alternatively, download the github repository and build it with 

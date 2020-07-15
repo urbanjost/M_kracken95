@@ -49,7 +49,7 @@ fpm ( as described at [Fortran Package Manager](https://github.com/fortran-lang/
 or just list it as a dependency in your fpm.toml project file.
 
      [dependencies]
-     M_process      = { git = "https://github.com/urbanjost/M_kracken95.git" }
+     M_kracken95    = { git = "https://github.com/urbanjost/M_kracken95.git" }
 
 ## Which version of kracken(3f) is this?
 

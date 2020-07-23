@@ -32,14 +32,15 @@ Just download the github repository, enter the src/ directory and run make:
      make
 ```
 
-This will compile the M_kracken95 module and build all the example programs.
-Then you can run the examples:
+This will compile the M_kracken95 module and build all the example
+programs.  Then you can run the examples:
 
       ../test/test1/kracken_test-1 -r 1234.56
       ../test/test2/kracken_test-2 --help
       ../test/test3/kracken_test-3 --par3 100 200 300
 
-## SUPPORTS FPM
+## SUPPORTS FPM (registered at the [fpm(1) registry](https://github.com/fortran-lang/fpm-registry) )
+
 Alternatively, download the github repository and build it with 
 fpm ( as described at [Fortran Package Manager](https://github.com/fortran-lang/fpm) )
 
@@ -53,7 +54,7 @@ fpm ( as described at [Fortran Package Manager](https://github.com/fortran-lang/
 or just list it as a dependency in your fpm.toml project file.
 
      [dependencies]
-     M_kracken95    = { git = "https://github.com/urbanjost/M_kracken95.git" }
+     M_kracken95        = { git = "https://github.com/urbanjost/M_kracken95.git" }
 
 ## Which version of kracken(3f) is this?
 

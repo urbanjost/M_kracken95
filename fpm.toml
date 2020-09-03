@@ -4,6 +4,7 @@ license = "Public Domain"
 author = "John S. Urban"
 maintainer = "urbanjost@comcast.net"
 copyright = "2020 John S. Urban"
+description = " command line parsing using Fortran 95 (LICENSE:PD)"
 ###########################################################################
 [[test]]
 name="test1"

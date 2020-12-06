@@ -15,39 +15,38 @@ integer :: ierror
 ! the special name VERB_oo is for the string before a switch
 
       call samples()
-end program krackentest
-
+contains
 
 subroutine samples
 use M_kracken95
 implicit none
 character(len=255) :: value
-integer :: ilen, ier
+integer :: iilen, ier
 real    :: anumber
 
 ! Getting everything before a switch
-      call retrev('mycommand_oo',value,ilen,ier)
-      write(*,*)'before any switch=',value(:ilen)
+      call retrev('mycommand_oo',value,iilen,ier)
+      write(*,*)'before any switch=',value(:iilen)
 
 ! Getting an integer from -i value
-      call retrev('mycommand_i',value,ilen,ier)
-      write(*,*)'value for -i =',value(:ilen)
+      call retrev('mycommand_i',value,iilen,ier)
+      write(*,*)'value for -i =',value(:iilen)
       call string_to_real(value,anumber,ier)
       write(*,*)'divided by 2 is ',nint(anumber)/2
 
 ! Getting a real number from -r value
-      call retrev('mycommand_r',value,ilen,ier)
-      write(*,*)'value for -r =',value(:ilen)
+      call retrev('mycommand_r',value,iilen,ier)
+      write(*,*)'value for -r =',value(:iilen)
       call string_to_real(value,anumber,ier)
       write(*,*)'divided by 2 is ',anumber/2
 
 ! Getting a string (with a default) from -par1
-      call retrev('mycommand_par1',value,ilen,ier)
-      write(*,*)'value for -par1 =',value(:ilen)
+      call retrev('mycommand_par1',value,iilen,ier)
+      write(*,*)'value for -par1 =',value(:iilen)
 
 ! Getting a string (with no default) from -par2
-      call retrev('mycommand_par2',value,ilen,ier)
-      write(*,*)'value for -par2 =',value(:ilen)
+      call retrev('mycommand_par2',value,iilen,ier)
+      write(*,*)'value for -par2 =',value(:iilen)
 
 ! Getting a string with a multi-word default and splitting it from -par3
       call listem('mycommand_par3','-par3',.true.)
@@ -74,14 +73,14 @@ character(len=255)  :: value
 character(len=255)  ::  array(132)
 integer ibegin(132)
 integer iterm(132)
-integer :: i10, igot, ilen, ier
+integer :: i10, igot, iilen, ier
 real    :: anumber
 
 !     get the value of the keyword and the length
-      call retrev(keyword,value,ilen,ier)
-      write(*,*)'value for ',label,'=',value(:ilen)
+      call retrev(keyword,value,iilen,ier)
+      write(*,*)'value for ',label,'=',value(:iilen)
 !     split the list into one word per array
-      call delim(value,array,132,igot,ibegin,iterm,ilen,' ,:')
+      call delim(value,array,132,igot,ibegin,iterm,iilen,' ,:')
 !     convert each word into a numeric value
       do i10=1,igot
          write(*,*)i10,') ',array(i10)(:len_trim(array(i10)))
@@ -95,3 +94,4 @@ real    :: anumber
          endif
       enddo
 end subroutine listem
+end program krackentest

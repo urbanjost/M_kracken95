@@ -64,12 +64,12 @@ contains
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-subroutine retrev(name,val,len,ier)
+subroutine retrev(name,val,llen,ier)
 ! "@(#)retrev(3f): retrieve token value from Language Dictionary when given NAME"
 !-----------------------------------------------------------------------------------------------------------------------------------
       character(len=*),intent(in)  :: name        ! name of variable to retrieve value for in form VERB_NAME
       character(len=*),intent(out) :: val         ! value for requested variable
-      integer,intent(out)          :: len         ! position of last non-blank character in requested variable
+      integer,intent(out)          :: llen        ! position of last non-blank character in requested variable
       integer,intent(out)          :: ier         ! error flag 0=found requested variable; -1=entry not found
 !-----------------------------------------------------------------------------------------------------------------------------------
       integer                      :: isub        ! subscript in dictionary where requested entry and corresponding value are found
@@ -78,11 +78,11 @@ subroutine retrev(name,val,len,ier)
 !-----------------------------------------------------------------------------------------------------------------------------------
       if(isub > 0)then                            ! entry was in dictionary
          val=values(isub)                         ! retrieve corresponding value for requested entry
-         len=ivalue(isub)                         ! get significant length of value
+         llen=ivalue(isub)                        ! get significant length of value
          ier=0                                    ! indicate requested entry name was successfully found
       else                                        ! entry was not in dictionary
          val=" "                                  ! set value to blank
-         len=0                                    ! set length to zero
+         llen=0                                   ! set length to zero
          ier=-1                                   ! set error flag to indicate requested entry was not found
       endif
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -136,13 +136,13 @@ function dget(keyword)
    character(len=*),intent(in) :: keyword           ! keyword to retrieve value for from dictionary
 !-----------------------------------------------------------------------------------------------------------------------------------
    character(len=IPvalue)      :: value             ! value returned
-   integer                     :: len               ! length of value found
+   integer                     :: llen              ! length of value found
    integer                     :: ier               ! error flag on call to retrieve value
    real(kind=dp)               :: a8                ! number to return
 !-----------------------------------------------------------------------------------------------------------------------------------
    value=" "                                        ! initialize value found for keyword in case an error occurs
-   call retrev(keyword, value, len, ier)            ! find value associated with keyword
-   call string_to_dble(value(:len), a8, ier)        ! convert the string to a numeric value
+   call retrev(keyword, value, llen, ier)           ! find value associated with keyword
+   call string_to_dble(value(:llen), a8, ier)       ! convert the string to a numeric value
    dget = a8
 !-----------------------------------------------------------------------------------------------------------------------------------
 end function dget
@@ -180,15 +180,15 @@ function lget(keyword)
    character(len=*),intent(in)  :: keyword         ! the dictionary keyword (in form VERB_KEYWORD) to retrieve
 !-----------------------------------------------------------------------------------------------------------------------------------
    character(len=IPvalue)       :: value           ! value corresponding to the requested keyword
-   integer                      :: len             ! length of VALUE returned by RETREV(3f)
+   integer                      :: llen            ! length of VALUE returned by RETREV(3f)
    integer                      :: ier             ! flag returned by RETREV(3f) indicating if an error occurred in retrieving value
 !-----------------------------------------------------------------------------------------------------------------------------------
    lget=.false.                                    ! initialize return value to .false.
-   call retrev(keyword, value, len, ier)           ! get value for corresponding keyword from language dictionary
+   call retrev(keyword, value, llen, ier)          ! get value for corresponding keyword from language dictionary
                                                    ! report on error ????
-   value=adjustl(uppers(value,len))                ! convert value to uppercase, left spaces trimmed
+   value=adjustl(uppers(value,llen))               ! convert value to uppercase, left spaces trimmed
 !-----------------------------------------------------------------------------------------------------------------------------------
-   if(value(:len).ne."#N#")then
+   if(value(:llen).ne."#N#")then
       select case(value(1:1))                      ! check first letter
       case('T','Y',' ')                            ! anything starting with "T" or "Y" or a blank is TRUE (true,t,yes,y,...)
          lget=.true.
@@ -201,10 +201,10 @@ function lget(keyword)
          case('F')                                 ! assume this is .f. or .false.
             lget=.false.
          case default
-            call send_message("*lget* bad logical expression for "//keyword(:len_trim(keyword))//'='//value(:len))
+            call send_message("*lget* bad logical expression for "//keyword(:len_trim(keyword))//'='//value(:llen))
          end select
       case default
-            call send_message("*lget* bad logical expression for "//keyword(:len_trim(keyword))//'='//value(:len))
+            call send_message("*lget* bad logical expression for "//keyword(:len_trim(keyword))//'='//value(:llen))
       end select
    else                                            ! special value "#N#" is assumed FALSE
       lget=.false.
@@ -214,11 +214,11 @@ end function lget
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-character(len=IPvalue) function sget(name,ilen) result(string)
+character(len=IPvalue) function sget(name,iilen) result(string)
 ! "@(#)sget(3f): Fetch string value and length of specified NAME the language dictionary"
 !     This routine trusts that the desired name exists. A blank is returned if the name is not in the dictionary
       character(len=*),intent(in)   :: name     !  name to look up in dictionary
-      integer,intent(out),optional  :: ilen     !  length of returned output string
+      integer,intent(out),optional  :: iilen    !  length of returned output string
 !-----------------------------------------------------------------------------------------------------------------------------------
       integer                       :: isub     ! index where verb_oo is stored or -1 if this is an unknown name
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -230,21 +230,21 @@ character(len=IPvalue) function sget(name,ilen) result(string)
          string(:)=" "
       endif
 !-----------------------------------------------------------------------------------------------------------------------------------
-      if(present(ilen))then                     ! if ILEN is present on call, return the value
-         ilen=ivalue(isub)
+      if(present(iilen))then                    ! if iilen is present on call, return the value
+         iilen=ivalue(isub)
       endif
 !-----------------------------------------------------------------------------------------------------------------------------------
 end function sget
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-function sgetl(name,ilen) result(string)
-! "@(#)sgetl(3f): Fetch string value for NAME from language dictionary up to length ILEN"
+function sgetl(name,iilen) result(string)
+! "@(#)sgetl(3f): Fetch string value for NAME from language dictionary up to length iilen"
 !     This routine trusts that the desired name exists. A blank is returned if the name is not in the dictionary
       character(len=*),intent(in)  :: name        ! name to look up in dictionary
-      integer,intent(in)           :: ilen        ! length of returned output string
+      integer,intent(in)           :: iilen       ! length of returned output string
 !-----------------------------------------------------------------------------------------------------------------------------------
-      character(len=ilen)          :: string
+      character(len=iilen)          :: string
       integer                      :: isub
 !-----------------------------------------------------------------------------------------------------------------------------------
       isub=igets(name)                            ! given name return index name is stored at
@@ -269,17 +269,17 @@ subroutine kracken(verb,string,error_return)
       integer,intent(out),optional   :: error_return
 !-----------------------------------------------------------------------------------------------------------------------------------
       character(len=IPcmd)           :: command
-      integer                        :: ilen
+      integer                        :: iilen
       integer                        :: ier
 !-----------------------------------------------------------------------------------------------------------------------------------
       if(present(error_return))error_return=0
 !-----------------------------------------------------------------------------------------------------------------------------------
-      call get_command_arguments(command,ilen,ier)
+      call get_command_arguments(command,iilen,ier)
       if(ier.ne.0)then
          call send_message("*kracken* could not get command line arguments")
          if(present(error_return))error_return=ier
       else
-         call dissect(verb,string,command(:ilen),ilen,ier)
+         call dissect(verb,string,command(:iilen),iilen,ier)
          ! if calling procedure is not testing error flag stop program on error
          if(.not.present(error_return).and.ier.ne.0)then
             call send_message("*kracken* (V 20151212) STOPPING: error parsing arguments")
@@ -522,7 +522,7 @@ subroutine store(name1,value1,allow1,ier)
       character(len=10)                  :: allow
       character(len=IPvalue)             :: value
       character(len=IPvalue)             :: mssge       !  the  message/error/string  value
-      integer                            :: nlen
+      integer                            :: nnlen
       integer                            :: new
       integer                            :: ii
       integer                            :: i10
@@ -533,7 +533,7 @@ subroutine store(name1,value1,allow1,ier)
       name=name1                                        ! store into a standard size variable for this type
       value=value1                                      ! store into a standard size variable for this type
       allow=allow1                                      ! store into a standard size variable for this type
-      nlen=len(name1)
+      nnlen=len(name1)
 !-----------------------------------------------------------------------------------------------------------------------------------
       call bounce(name,indx,dict_verbs,ier,mssge)       ! determine storage placement of the variable and whether it is new
       if(ier  ==  -1)then                               ! an error occurred in determining the storage location
@@ -545,9 +545,9 @@ subroutine store(name1,value1,allow1,ier)
       if(indx > 0)then                                  ! found the variable name
          new=1
       else if(indx <= 0.and.allow  ==  "add")then       ! check if the name needs added
-         call add_string(name,nlen,indx,ier)            ! adding the new variable name in the variable name array
+         call add_string(name,nnlen,indx,ier)           ! adding the new variable name in the variable name array
          if(ier  ==  -1)then
-            call send_message("*store* could not add "//name(:nlen))
+            call send_message("*store* could not add "//name(:nnlen))
             call send_message(mssge)
             return
          endif
@@ -581,7 +581,7 @@ end subroutine store
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-subroutine bounce(varnam,index,dictionary,ier,mssge)
+subroutine bounce(varnam,indx,dictionary,ier,mssge)
 ! "@(#)bounce(3f,private): find index in Language Dictionary where VARNAM can be found"
 !
 !     If VARNAM is not found report where it should be placed as a NEGATIVE index number.
@@ -589,7 +589,7 @@ subroutine bounce(varnam,index,dictionary,ier,mssge)
 !     Assuming all variable names are lexically greater than a blank string.
 !-----------------------------------------------------------------------------------------------------------------------------------
       character(len=*),intent(in)                :: varnam      ! variable name to look up in dictionary
-      integer,intent(out)                        :: index       ! location where variable is or should be
+      integer,intent(out)                        :: indx        ! location where variable is or should be
       character(len=*),dimension(:),intent(in)   :: dictionary  ! sorted dictionary array to find varnam in
       integer,intent(out)                        :: ier
       character(len=*),intent(out)               :: mssge
@@ -600,29 +600,29 @@ subroutine bounce(varnam,index,dictionary,ier,mssge)
       integer                                    :: i10
 !-----------------------------------------------------------------------------------------------------------------------------------
       maxtry=int(log(float(IPic))/log(2.0)+1.0)                 ! calculate max number of tries required to find a conforming name
-      index=(IPic+1)/2
+      indx=(IPic+1)/2
       imin=1
       imax=IPic
 !-----------------------------------------------------------------------------------------------------------------------------------
       do i10=1,maxtry
-         if(varnam  ==  dictionary(index))then
+         if(varnam  ==  dictionary(indx))then
             return
-         else if(varnam > dictionary(index))then
-            imax=index-1
+         else if(varnam > dictionary(indx))then
+            imax=indx-1
          else
-            imin=index+1
+            imin=indx+1
          endif
          if(imin > imax)then
-            index=-imin
-            if(iabs(index) > IPic)then
+            indx=-imin
+            if(iabs(indx) > IPic)then
                mssge="error 03 in bounce"
                ier=-1
                return
             endif
             return
          endif
-         index=(imax+imin)/2
-         if(index > IPic.or.index <= 0)then
+         indx=(imax+imin)/2
+         if(indx > IPic.or.indx <= 0)then
             mssge="error 01 in bounce"
             ier=-1
             return
@@ -635,18 +635,18 @@ end subroutine bounce
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-subroutine add_string(newnam,nchars,index,ier)
+subroutine add_string(newnam,nchars,indx,ier)
 ! "@(#)add_string(3f,private): Add new string name to Language Library dictionary"
 !=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
       character(len=*),intent(in)       :: newnam     ! new variable name to add to dictionary
       integer,intent(in)                :: nchars     ! number of characters in NEWNAM
-      integer,intent(in)                :: index
+      integer,intent(in)                :: indx
       integer,intent(out)               :: ier
 !=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
       integer                           :: istart
       integer                           :: i10
 !=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-      istart=iabs(index)
+      istart=iabs(indx)
 !=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 !     if last position in the name array has already been used, then report no room is left and set error flag and error message.
       if(dict_verbs(IPic) /= " ")then                 ! check if dictionary full
@@ -683,26 +683,26 @@ function igets(chars0)
       character(len=IPverb)              :: chars
       character(len=IPvalue)             :: mssge
       integer                            :: ierr
-      integer                            :: index
+      integer                            :: indx
       integer                            :: igets
 !-----------------------------------------------------------------------------------------------------------------------------------
       chars=chars0
       ierr=0
-      index=0
-      call bounce(chars,index,dict_verbs,ierr,mssge)             ! look up position
+      indx=0
+      call bounce(chars,indx,dict_verbs,ierr,mssge)             ! look up position
 !-----------------------------------------------------------------------------------------------------------------------------------
-      if((ierr  ==  -1).or.(index <= 0))then
+      if((ierr  ==  -1).or.(indx <= 0))then
          call send_message("*igets* variable "//trim(chars)//" undefined")
          igets=-1                                                ! very unfriendly subscript value
       else
-         igets=index
+         igets=indx
       endif
 !-----------------------------------------------------------------------------------------------------------------------------------
 end function igets
 !===================================================================================================================================
 !()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()()!
 !===================================================================================================================================
-subroutine delim(line0,array,n,iicount,ibegin,iterm,ilen,dlim)
+subroutine delim(line0,array,n,iicount,ibegin,iterm,iilen,dlim)
 ! "@(#)delim(3f): parse a string and store tokens into an array"
 !
 !     given a line of structure " par1 par2 par3 ... parn "
@@ -727,7 +727,7 @@ subroutine delim(line0,array,n,iicount,ibegin,iterm,ilen,dlim)
       integer,dimension(:),intent(out)            :: ibegin
       !integer,dimension(n),intent(out)           :: iterm
       integer,dimension(:),intent(out)            :: iterm
-      integer,intent(out)                         :: ilen
+      integer,intent(out)                         :: iilen
       character(len=*),intent(in)                 :: dlim
       character(len=IPcmd)                        :: line
       logical                                     :: lstore
@@ -739,8 +739,8 @@ subroutine delim(line0,array,n,iicount,ibegin,iterm,ilen,dlim)
       integer                                     :: i10
       integer                                     :: ifound
       iicount=0
-      ilen=len_trim(line0)
-      if(ilen > IPcmd)then
+      iilen=len_trim(line0)
+      if(iilen > IPcmd)then
          call send_message("*delim* input line too long")
       endif
       line=line0
@@ -752,11 +752,11 @@ subroutine delim(line0,array,n,iicount,ibegin,iterm,ilen,dlim)
          endif
       endif
 !     command was totally blank
-      if(ilen  ==  0)then
+      if(iilen  ==  0)then
          return
       endif
 !     there is at least one non-blank character in the command
-!     ilen is the column position of the last non-blank character
+!     iilen is the column position of the last non-blank character
 !     find next non-delimiter
       icol=1
       if(array(1)  ==  "#N#")then                            ! special flag to not store into character array
@@ -768,17 +768,17 @@ subroutine delim(line0,array,n,iicount,ibegin,iterm,ilen,dlim)
          if(index(dlim(1:idlim),line(icol:icol))  ==  0)then ! if current character is not a delimiter
            istart=icol                                       ! start new token on the non-delimiter character
            ibegin(iarray)=icol
-           iend=ilen-istart+1+1                              ! assume no delimiters so put past end of line
+           iend=iilen-istart+1+1                             ! assume no delimiters so put past end of line
            do i10=1,idlim
-              ifound=index(line(istart:ilen),dlim(i10:i10))
+              ifound=index(line(istart:iilen),dlim(i10:i10))
               if(ifound > 0)then
                 iend=min(iend,ifound)
               endif
            enddo
-            if(iend <= 0)then                              ! no remaining delimiters
-              iterm(iarray)=ilen
+            if(iend <= 0)then                                ! no remaining delimiters
+              iterm(iarray)=iilen
               if(lstore)then
-                 array(iarray)=line(istart:ilen)
+                 array(iarray)=line(istart:iilen)
               endif
               iicount=iarray
               return
@@ -796,7 +796,7 @@ subroutine delim(line0,array,n,iicount,ibegin,iterm,ilen,dlim)
          endif
    !     last character in line was a delimiter, so no text left
    !     (should not happen where blank=delimiter)
-         if(icol > ilen)then
+         if(icol > iilen)then
            iicount=iarray
            return
          endif
@@ -926,7 +926,7 @@ subroutine menu(verb)
    integer                        :: ireply
    real                           :: valu
    integer                        :: ierr
-   integer                        :: index
+   integer                        :: indx
    character(len=IPvalue)         :: mssge   !  the message/error/string  value returned by BOUNCE(3f)
 !-----------------------------------------------------------------------------------------------------------------------------------
    ii=len_trim(verb)
@@ -943,9 +943,9 @@ subroutine menu(verb)
             if(dict_verbs(i10).eq.verb(:ii)//'_?')then        ! do not show the keyword VERB_?
                cycle MAKEMENU
             endif
-            call bounce('?'//dict_verbs(i10),index,dict_verbs,ierr,mssge) ! if ?VERB is defined assume it is a prompt
-            if(index.gt.0)then
-               prompt=values(index)
+            call bounce('?'//dict_verbs(i10),indx,dict_verbs,ierr,mssge) ! if ?VERB is defined assume it is a prompt
+            if(indx.gt.0)then
+               prompt=values(indx)
             else
                prompt=' '
             endif
@@ -1009,9 +1009,9 @@ subroutine menu(verb)
          if(dict_verbs(ifound).eq.verb(:ii)//'_?')then     ! replaced this with FINISHED so exit
             exit INFINITE
          endif
-         call bounce('?'//dict_verbs(ifound),index,dict_verbs,ierr,mssge) ! if ?VERB is defined assume it is a prompt
-         if(index.gt.0)then
-            prompt=values(index)
+         call bounce('?'//dict_verbs(ifound),indx,dict_verbs,ierr,mssge) ! if ?VERB is defined assume it is a prompt
+         if(indx.gt.0)then
+            prompt=values(indx)
          else
             prompt=' '
          endif
@@ -1068,12 +1068,12 @@ end subroutine menu
 !-!  !!! Tested with gfortran version '4.8.0 20130502 (prerelease)'.
 !-!  character(len=*),intent(in)                       ::  name
 !-!  character(len=:),intent(out),allocatable,OPTIONAL ::  val
-!-!  integer,intent(out),OPTIONAL                      ::  len
+!-!  integer,intent(out),OPTIONAL                      ::  llen
 !-!  integer,intent(out),OPTIONAL                      ::  ier
 !-!  
 !-!  integer                                           ::  len_internal
 !-!  integer                                           ::  ier_internal
-!-!  character(len=0)                                  ::  dummystring
+!-!  character(llen=0)                                 ::  dummystring
 !-!  
 !-!  call retrev(name,dummystring,len_internal,ier_internal)
 !-!  
@@ -1085,8 +1085,8 @@ end subroutine menu
 !-!    call retrev(name,val,len_internal,ier_internal)
 !-!  end if
 !-!  
-!-!  if (present(len)) then
-!-!    len = len_internal
+!-!  if (present(llen)) then
+!-!    llen = len_internal
 !-!  end if
 !-!  
 !-!  if (present(ier)) then
@@ -1096,7 +1096,7 @@ end subroutine menu
 !-----------------------------------------------------------------------------------------------------------------------------------
 !-!subroutine allocate_string(stringlength,stringvariable)
 !-!  !!! For various reasons, we need a subroutine to allocate a character
-!-!  !!! of len=stringlength where stringlength is determined at runtime.
+!-!  !!! of llen=stringlength where stringlength is determined at runtime.
 !-!  !!! @(#)allocate_string: allocate string
 !-!  integer(kind=8),intent(in)                  :: stringlength
 !-!  character(len=:),allocatable,intent(out)    :: stringvariable

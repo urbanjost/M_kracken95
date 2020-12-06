@@ -28,8 +28,19 @@
    ```bash
         git clone https://github.com/urbanjost/M_kracken95.git
         cd M_kracken95/src
-        # change Makefile if not using gfortran(1)
-        make
+        # change Makefile if not using one of the listed compilers
+     
+        # for gfortran
+        make clean
+        make F90=gfortran gfortran
+     
+        # for ifort
+        make clean
+        make F90=ifort ifort
+
+        # for nvfortran
+        make clean
+        make F90=nvfortran nvfortran
    ```
    
    This will compile the M_kracken95 module and build all the example
@@ -53,8 +64,10 @@
    
    or just list it as a dependency in your fpm.toml project file.
    
+```toml
         [dependencies]
         M_kracken95        = { git = "https://github.com/urbanjost/M_kracken95.git" }
+```
 
 ## Which version of kracken(3f) is this?
 

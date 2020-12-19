@@ -43,6 +43,8 @@ implicit none
    private :: uppers                ! return copy of string converted to uppercase
    private :: menu                  ! generate an interactive menu when -? option is used
 !-----------------------------------------------------------------------------------------------------------------------------------
+   public  :: kracken_comment
+!-----------------------------------------------------------------------------------------------------------------------------------
 ! length of verbs and entries in Language dictionary
 ! NOTE:   many parameters were reduced in size so as to just accommodate being used as a command line parser.
 !         In particular, some might want to change:
@@ -59,6 +61,7 @@ implicit none
    character(len=IPvalue),dimension(IPic)     :: values=" "        ! contains the values of string variables
    character(len=IPverb),dimension(IPic)      :: dict_verbs=" "    ! string variable names
    integer(kind=k_int),dimension(IPic)        :: ivalue=0          ! significant lengths of string variable values
+   character(len=1),save                      :: kracken_comment='#'
 !-----------------------------------------------------------------------------------------------------------------------------------
 contains
 !===================================================================================================================================
@@ -461,7 +464,7 @@ subroutine parse(verb,string,allow,error_return)
          ipnt(1)=1                        ! restart variable value
          ipnt(2)=1                        ! restart variable name
 !-----------------------------------------------------------------------------------------------------------------------------------
-      elseif(currnt == "#".and.delmt == "off")then   ! rest of line is comment
+      elseif(currnt == kracken_comment.and.delmt == "off")then   ! rest of line is comment
          islen=ipoint
          dummy=" "
          prev=" "

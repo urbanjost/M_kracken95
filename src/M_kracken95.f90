@@ -32,7 +32,7 @@ implicit none
    public :: string_to_real         ! returns real value from numeric character string NOT USING CALCULATOR
    public :: string_to_dble         ! returns double precision value from numeric character string NOT USING CALCULATOR
 !-----------------------------------------------------------------------------------------------------------------------------------
-   private :: dissect               ! for user-defined commands: define defaults, then process user input
+   public  :: dissect               ! for user-defined commands: define defaults, then process user input
    private :: parse                 ! parse user command and store tokens into Language Dictionary
    private :: store                 ! replace dictionary name's value (if allow=add add name if necessary)
    private :: bounce                ! find location (index) in Language Dictionary where VARNAM can be found

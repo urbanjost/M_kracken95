@@ -50,7 +50,8 @@
          ../test/test2/kracken_test-2 --help
          ../test/test3/kracken_test-3 --par3 100 200 300
    
-## SUPPORTS FPM (registered at the [fpm(1) registry](https://github.com/fortran-lang/fpm-registry) )
+## SUPPORTS FPM ![fpm](docs/images/fpm_logo.gif)
+#### (registered at the [fpm(1) registry](https://github.com/fortran-lang/fpm-registry) )
 
    Alternatively, download the github repository and build it with 
    fpm ( as described at [Fortran Package Manager](https://github.com/fortran-lang/fpm) )

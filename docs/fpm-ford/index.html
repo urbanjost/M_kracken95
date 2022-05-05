@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   <meta name="description" content="M_kracken95 module">
+    
+    <meta name="author" content="John S. Urban" >
+    <link rel="icon" href="./favicon.png">
+
+    <title> M_kracken95 </title>
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/pygments.css" rel="stylesheet">
+    <link href="./css/font-awesome.min.css" rel="stylesheet">
+    <link href="./css/local.css" rel="stylesheet">
+    
+    <link  href="./tipuesearch/tipuesearch.css" rel="stylesheet">
+    
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="./js/jquery-2.1.3.min.js"></script>
+    <script src="./js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html">M_kracken95 </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+        
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          
+              
+            <li><a href="./sourcefile/m_kracken95.f90.html">Source File</a></li>
+        
+        
+        
+            <li><a href="./lists/modules.html">Modules</a></li>
+        
+            
+                                
+            <li><a href="./lists/procedures.html">Procedures</a></li>
+        
+               
+        
+            </ul>
+            </li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./sourcefile/m_kracken95.f90.html">Source File</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/modules.html">Modules</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/procedures.html">Procedures</a></li>
+
+                             
+
+          </ul>
+        
+        <form action="./search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <p>M_kracken95 module</p>
+        	 
+	<p> Find us on&hellip;</p>
+        <p>
+        	 
+          <a class="btn btn-lg btn-primary" href="https://github.com/urbanjost/M_kracken95" role="button">GitHub</a>
+			 
+			 
+			 
+			 
+	         
+			 
+        </p>
+      </div>
+
+      <div class="row" id='text'>
+		  
+        <div class="col-md-8">
+		  
+          <h1>M_kracken95</h1>
+          <!--
+author_pic:
+twitter:
+website:
+-->
+<h1 id="m_kracken95">M_kracken95</h1>
+<p>A module that provides the Fortran 95 version of the kracken(3f)
+   procedure (and related routines) for command line parsing. See the
+   <a href="https://urbanjost.github.io/M_kracken95/krackenhelp.html">kracken documentation</a> for a
+   full description.</p>
+<h2 id="sample-usage">SAMPLE USAGE</h2>
+<p><code>fortran
+       program krackentest
+       use M_kracken95, only : kracken, iget, lget, rget, sget
+       implicit none
+       ! define command and default argument values and read command line arguments
+         call kracken('cmd', ' -i 10 -r 10.0e3 -l .F. -f input')
+       ! retrieve values as specified types and use them
+         write(*,*)trim(sget('cmd_f')), iget('cmd_i'), lget('cmd_l'), rget('cmd_r')
+       end program krackentest</code>
+   This program can now be called like
+   <code>bash
+       ./krackentest -r 200 -i 123 -l -f myfile.txt</code></p>
+<h2 id="download-and-build">DOWNLOAD AND BUILD</h2>
+<p>Just download the github repository, enter the src/ directory and run make:</p>
+<p>```bash
+        git clone https://github.com/urbanjost/M_kracken95.git
+        cd M_kracken95/src
+        # change Makefile if not using one of the listed compilers</p>
+<div class="codehilite"><pre><span></span><code>    # <span class="k">for</span> <span class="nv">gfortran</span>
+    <span class="nv">make</span> <span class="nv">clean</span>
+    <span class="nv">make</span> <span class="nv">F90</span><span class="o">=</span><span class="nv">gfortran</span> <span class="nv">gfortran</span>
+
+    # <span class="k">for</span> <span class="nv">ifort</span>
+    <span class="nv">make</span> <span class="nv">clean</span>
+    <span class="nv">make</span> <span class="nv">F90</span><span class="o">=</span><span class="nv">ifort</span> <span class="nv">ifort</span>
+
+    # <span class="k">for</span> <span class="nv">nvfortran</span>
+    <span class="nv">make</span> <span class="nv">clean</span>
+    <span class="nv">make</span> <span class="nv">F90</span><span class="o">=</span><span class="nv">nvfortran</span> <span class="nv">nvfortran</span>
+</code></pre></div>
+
+<p>```</p>
+<p>This will compile the M_kracken95 module and build all the example
+   programs.  Then you can run the examples:</p>
+<div class="codehilite"><pre><span></span><code>     ../test/test1/kracken_test-1 -r 1234.56
+     ../test/test2/kracken_test-2 --help
+     ../test/test3/kracken_test-3 --par3 100 200 300
+</code></pre></div>
+
+<h2 id="supports-fpm">SUPPORTS FPM <img alt="fpm" src="docs/images/fpm_logo.gif"></h2>
+<h4 id="registered-at-the-fpm1-registry">(registered at the <a href="https://github.com/fortran-lang/fpm-registry">fpm(1) registry</a> )</h4>
+<p>Alternatively, download the github repository and build it with 
+   fpm ( as described at <a href="https://github.com/fortran-lang/fpm">Fortran Package Manager</a> )</p>
+<p><code>bash
+        git clone https://github.com/urbanjost/M_kracken95.git
+        cd M_kracken95
+        fpm build
+        fpm test</code></p>
+<p>or just list it as a dependency in your fpm.toml project file.</p>
+<div class="codehilite"><pre><span></span><code>        <span class="k">[dependencies]</span>
+        <span class="n">M_kracken95</span>        <span class="o">=</span> <span class="p">{</span> <span class="n">git</span> <span class="o">=</span> <span class="s">&quot;https://github.com/urbanjost/M_kracken95.git&quot;</span> <span class="p">}</span>
+</code></pre></div>
+
+<h2 id="which-version-of-kracken3f-is-this">Which version of kracken(3f) is this?</h2>
+<p>There are multiple versions of the kracken(3f) routine dating back
+   to the late 1980s that conform to various Fortran standards. This is
+   the one that adheres to the Fortran 95 Standard except for the use of
+   the routines command_argument_count(3f) and get_command_argument(3f),
+   which are part of Fortran 2003 (Fortran 95 has no standard intrinsic
+   for reading command line arguments but the vast majority of compilers
+   have some routine for doing so as an extension).</p>
+<p>The main disadvantage of this version versus f2003+ versions is that
+   constant values are used to specify the maxiumum number of parameters and
+   the length of the parameters (if you know you have the f2003+ routines
+   for getting command arguments this can be easily changed so that you
+   scan the argument lengths in the first pass and then allocate them and
+   use them in the second pass).</p>
+<p>But since newer versions already exist that take advantage of Fortran
+   2003 this version is considered frozen. Since it is still requested it
+   will remain available as-is.</p>
+<h2 id="if-you-are-having-problems">If you are having problems</h2>
+<p>The routine GET_COMMAND_ARGUMENTS() is the only one that uses non-f95
+   standard routines to read from the command line. If you do not have a
+   compiler that supports these f2003 procedures you may have to change that
+   procedure to make calls to the equivalent common extensions GETARGS()
+   and IARGC(). Note that as of this date it is very likely you can get
+   a GET_COMMAND_ARGUMENT() look-alike from the free F2KCLI package from
+   WINTERACTER if your compiler does not support it.</p>
+<p>You may note that the command parsing rules are not identical to Unix,
+   although very similar. This is intentional so that quotes are rarely
+   needed when entering commands and so negative values can be entered
+   without quoting. The main differences are there is no way to terminate
+   a keyword except by starting a new keyword; and the default keyword
+   -oo described later is implied after the verb; and you cannot combine
+   keywords (-ir is not equivalent to -i -r, which is sometimes allowed on
+   Unix commands). You may find the way to include a literal double-quote
+   character (&ldquo;) as part of an input value is the most unlike Unix (<em>Hint</em>:
+   Double the double-quote. See code comments for details).</p>
+<hr>
+        </div>
+		  
+        <div class="col-md-4">
+	  <div class="well">
+          <h2>Developer Info</h2>
+          <h4>John S. Urban</h4>
+          
+          
+			   
+            <div class="text-center"><div class="btn-group" role="group">
+              
+              
+              
+              <a class="btn btn-lg btn-primary" href="https://github.com/urbanjost/M_kracken95"><i class="fa fa-github fa-lg"></i></a>
+				  
+				  
+              
+              
+              
+              
+            </div></div>
+            
+       </div>
+       </div>
+       
+      </div>
+      
+      
+      
+      
+		
+      <div class="row">
+        <div class="col-xs-6 col-sm-4">
+              <h3>Source Files</h3>
+              <ul>
+                
+                  
+                    <li><a href='./sourcefile/m_kracken95.f90.html'>M_kracken95.f90</a></li>
+                  
+                
+              </ul>
+          </div>
+          
+		  <div class="col-xs-6 col-sm-4">
+              <h3>Modules</h3>
+              <ul>
+                
+                  
+                    <li><a href='./module/m_kracken95.html'>M_kracken95</a></li>
+                  
+                
+              </ul>
+          </div>
+          
+          
+		  <div class="col-xs-6 col-sm-4">
+              <h3>Procedures</h3>
+              <ul>
+                
+                  
+                    <li><a href='./proc/delim.html'>delim</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/dget.html'>dget</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/dissect.html'>dissect</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/iget.html'>iget</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/kracken.html'>kracken</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/lget.html'>lget</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/retrev.html'>retrev</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/rget.html'>rget</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/setprompts.html'>setprompts</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/sget.html'>sget</a></li>
+                  
+                
+                  
+                    <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+              </ul>
+          </div>
+          
+          
+      </div>
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-4"><p>&copy; 2022 
+                                          </p></div>
+        <div class="col-xs-6 col-md-4 col-md-push-4">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+             on 2022-05-04 21:39  
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> M_kracken95 was developed by John S. Urban</p></div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+    <script src="./tipuesearch/tipuesearch_content.js"></script>
+    <script src="./tipuesearch/tipuesearch_set.js"></script>
+    <script src="./tipuesearch/tipuesearch.js"></script>
+    
+    
+  </body>
+</html>

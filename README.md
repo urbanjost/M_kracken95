@@ -5,7 +5,7 @@
    [kracken documentation](https://urbanjost.github.io/M_kracken95/krackenhelp.html) for a
    full description.
 
-## SAMPLE USAGE
+## Sample Usage
 
    ```fortran
        program krackentest
@@ -22,7 +22,7 @@
        ./krackentest -r 200 -i 123 -l -f myfile.txt
    ```
 
-## DOWNLOAD AND BUILD
+## Download and Build
    Just download the github repository, enter the src/ directory and run make:
    
    ```bash
@@ -50,7 +50,7 @@
          ../test/test2/kracken_test-2 --help
          ../test/test3/kracken_test-3 --par3 100 200 300
    
-## SUPPORTS FPM ![fpm](docs/images/fpm_logo.gif)
+## Supports FPM ![fpm](docs/images/fpm_logo.gif)
 #### (registered at the [fpm(1) registry](https://github.com/fortran-lang/fpm-registry) )
 
    Alternatively, download the github repository and build it with 

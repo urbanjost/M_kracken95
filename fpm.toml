@@ -1,4 +1,4 @@
-# TOML file for fpm as described at https://github.com/fortran-lang/fpm/blob/master/manifest-reference.md
+# TOML file for fpm as described at https://fpm.fortran-lang.org/en/spec/manifest.html
 name = "M_kracken95"
 version = "0.1.0"
 license = "Public Domain"
@@ -9,6 +9,12 @@ description = " command line parsing using Fortran 95 (LICENSE:PD)"
 categories = ["command line argument parsing"]
 keywords = ["fortran", "command line", "arguments"]
 homepage = "https://github.com/urbanjost/M_kracken95.git"
+
+[build]
+#auto-executables = true
+#auto-examples = false
+#auto-tests = false
+module-naming = true          # Use default naming convention
 ###########################################################################
 [[test]]
 name="test1"
